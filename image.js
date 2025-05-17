@@ -5,7 +5,6 @@
 const express = require('express');
 const router = express.Router();
 const OpenAIService = require('./openai');
-const SupabaseService = require('./supabase');
 const axios = require('axios');
 
 async function generateImageWithFal(prompt, falKey, openaiKey) {
@@ -63,7 +62,7 @@ async function generateImageWithFal(prompt, falKey, openaiKey) {
 // POST /api/image
 router.post('/', async (req, res) => {
   try {
-    const { article, prompt, systemPrompt, apiKey, falKey, articleId } = req.body;
+    const { article, prompt, systemPrompt, apiKey, falKey } = req.body;
     
     if (!article) {
       return res.status(400).json({ error: 'Article content is required' });
@@ -81,17 +80,9 @@ router.post('/', async (req, res) => {
       imageUrl = await openaiService.generateImage(imagePrompt);
     }
     
-    // If articleId is provided, save the image to Supabase
-    let savedImage = null;
-    if (articleId) {
-      const supabaseService = new SupabaseService();
-      savedImage = await supabaseService.saveImage(imageUrl, articleId, imagePrompt);
-    }
-    
-    res.json({ 
+    res.json({
       imageUrl,
-      imagePrompt,
-      savedImage
+      imagePrompt
     });
   } catch (error) {
     console.error('Error in image generation endpoint:', error);

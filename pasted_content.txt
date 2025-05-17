@@ -60,5 +60,5 @@ AI7: Image prompt generation. (4o)
 AI8: Image generation.(gpt images)
 AI9: HTML formatting and output. (Gemini 2.5 pro)
 
-All the prompts should be accessible in the app and editable with premade prompts that can be edited by the user. It will be hosted on heroku; and uses supabase.
+All the prompts should be accessible in the app and editable with premade prompts that can be edited by the user. It will be hosted on heroku.
 Add in your to do obligatory steps to go look up the documentation for each api as i'm pretty sure your knowledge base cutoff date is too old and changes have happened since. All API keys should be set by the user of the app.

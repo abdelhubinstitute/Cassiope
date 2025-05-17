@@ -84,33 +84,3 @@ The GPT Image API (gpt-image-1) is OpenAI's image generation model. Due to Cloud
 ### Note
 Further research or alternative documentation sources will be needed during implementation.
 
-## 4. Supabase
-
-### Overview
-Supabase provides a RESTful API auto-generated from your database schema, allowing direct connection to your database through a RESTful interface.
-
-### Key Features
-- Auto-generated API from database schema
-- Self-documenting in the Dashboard
-- Secure with PostgreSQL's Row Level Security
-- Fast and scalable
-
-### REST API
-- Base URL: `https://<project_ref>.supabase.co/rest/v1/`
-- Supports CRUD operations
-- Works with Postgres Views, Materialized Views, and Foreign Tables
-- Works with Postgres Functions
-
-### Storage API
-- Store images, videos, documents, and other file types
-- Global CDN for reduced latency
-- Built-in image optimizer for resizing and compressing media files
-- Access control framework for files
-
-### Authentication
-- API key-based authentication
-- Keys available in the Supabase Dashboard
-
-### Implementation Notes
-- User will provide their own API keys
-- Storage will be used for user data and image storage

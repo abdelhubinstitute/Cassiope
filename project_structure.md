@@ -8,7 +8,7 @@ This document outlines the project structure for the AI Article Generation Workf
 
 - **Frontend**: HTML, CSS, JavaScript (with modern framework)
 - **Backend**: Node.js
-- **Database/Storage**: Supabase
+- **Database/Storage**: none (data is not persisted)
 - **Deployment**: Heroku
 - **APIs**:
   - OpenAI GPT-4o API for most AI components
@@ -40,7 +40,6 @@ ai-article-workflow/
 │   │   │   └── PublishPhase.js
 │   │   ├── services/         # Frontend services
 │   │   │   ├── api.js        # API client
-│   │   │   └── supabase.js   # Supabase client
 │   │   ├── styles/           # CSS/SCSS files
 │   │   ├── utils/            # Utility functions
 │   │   ├── App.js            # Main application component
@@ -57,13 +56,11 @@ ai-article-workflow/
 │   │   │   ├── image.js      # Image generation endpoints
 │   │   │   └── html.js       # HTML formatting endpoints
 │   │   ├── config/           # Configuration files
-│   │   │   ├── supabase.js   # Supabase configuration
 │   │   │   └── env.js        # Environment variables
 │   │   ├── middleware/       # Middleware functions
 │   │   ├── services/         # Backend services
 │   │   │   ├── openai.js     # OpenAI service
 │   │   │   ├── perplexity.js # Perplexity service
-│   │   │   └── supabase.js   # Supabase service
 │   │   ├── utils/            # Utility functions
 │   │   └── index.js          # Server entry point
 │   │
@@ -78,47 +75,6 @@ ai-article-workflow/
 ├── .gitignore                # Git ignore file
 └── README.md                 # Project documentation
 ```
-
-## Database Schema (Supabase)
-
-### Tables
-
-1. **users**
-   - id (primary key)
-   - created_at
-   - last_active
-
-2. **articles**
-   - id (primary key)
-   - user_id (foreign key)
-   - title
-   - theme
-   - created_at
-   - updated_at
-   - status (enum: draft, published)
-
-3. **article_versions**
-   - id (primary key)
-   - article_id (foreign key)
-   - version_number
-   - content
-   - created_at
-
-4. **prompts**
-   - id (primary key)
-   - user_id (foreign key)
-   - ai_component (enum: title, research, outline, draft, critique, revision, image, html)
-   - prompt_text
-   - is_default
-   - created_at
-   - updated_at
-
-5. **images**
-   - id (primary key)
-   - article_id (foreign key)
-   - prompt
-   - url
-   - created_at
 
 ## API Endpoints
 
@@ -156,8 +112,3 @@ ai-article-workflow/
    - `POST /api/html`
    - Format article and images into HTML
 
-### Supabase Integration
-
-- Storage buckets for images and article data
-- Real-time database updates
-- Client-side API for direct database access

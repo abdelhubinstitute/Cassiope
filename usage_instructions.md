@@ -10,7 +10,6 @@ This application guides users through a multi-phase process of article creation,
 
 - Node.js (v14 or higher)
 - npm or yarn
-- Supabase account
 - API keys for:
   - OpenAI (for GPT-4o and GPT Image)
   - Perplexity
@@ -26,13 +25,9 @@ This application guides users through a multi-phase process of article creation,
    ```
    PORT=3000
    NODE_ENV=development
-   SUPABASE_URL=your_supabase_url
-   SUPABASE_KEY=your_supabase_key
    ```
 
-4. Set up the Supabase database using the SQL commands in `src/server/config/supabase_schema.sql`
-
-5. Start the application:
+4. Start the application:
    ```
    npm start
    ```
@@ -96,15 +91,12 @@ Each AI component uses a default prompt that can be customized:
 2. Connect your GitHub repository
 3. Add the following environment variables in Heroku settings:
    - `NODE_ENV=production`
-   - `SUPABASE_URL=your_supabase_url`
-   - `SUPABASE_KEY=your_supabase_key`
 4. Deploy the application
 
 ## Troubleshooting
 
 - **API Key Issues**: Ensure your API keys are correctly entered and have the necessary permissions
 - **Image Generation Errors**: Check that your OpenAI account has access to GPT Image
-- **Supabase Connection Issues**: Verify your Supabase URL and key are correct
 
 ## Support
 
