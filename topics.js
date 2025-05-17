@@ -9,14 +9,14 @@ const OpenAIService = require('./openai');
 // POST /api/topics
 router.post('/', async (req, res) => {
   try {
-    const { title, systemPrompt, apiKey } = req.body;
+    const { title, prompt, systemPrompt, apiKey } = req.body;
 
     if (!title) {
       return res.status(400).json({ error: 'Title is required' });
     }
 
     const openaiService = new OpenAIService(apiKey);
-    const topics = await openaiService.generateSearchTopics(title, systemPrompt);
+    const topics = await openaiService.generateSearchTopics(title, prompt, systemPrompt);
 
     res.json({ topics });
   } catch (error) {
