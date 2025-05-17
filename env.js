@@ -11,9 +11,5 @@ module.exports = {
   
   // API Keys (to be provided by users in the application)
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-  PERPLEXITY_API_KEY: process.env.PERPLEXITY_API_KEY,
-  
-  // Supabase configuration
-  SUPABASE_URL: process.env.SUPABASE_URL,
-  SUPABASE_KEY: process.env.SUPABASE_KEY,
+  PERPLEXITY_API_KEY: process.env.PERPLEXITY_API_KEY
 };

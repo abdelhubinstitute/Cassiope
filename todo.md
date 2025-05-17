@@ -7,7 +7,6 @@
 - [x] Research OpenAI API (GPT-4o) documentation
 - [x] Research Perplexity API documentation
 - [x] Research GPT Image API documentation
-- [x] Research Supabase documentation
 - [x] Document API endpoints and requirements
 
 ## Design Phase
@@ -28,7 +27,7 @@
 - [x] Implement AI8: Image Generator (GPT Image)
 - [x] Implement AI9: HTML Formatter (GPT-4o)
 - [x] Implement editable prompts functionality
-- [x] Integrate Supabase for data and image storage
+
 
 ## Testing & Deployment Phase
 - [x] Test complete workflow
@@ -41,7 +40,7 @@
 - [ ] Implement AI8: Image Generator (GPT Image)
 - [ ] Implement AI9: HTML Formatter (GPT-4o)
 - [ ] Implement editable prompts functionality
-- [ ] Integrate Supabase for data and image storage
+
 
 ## Testing & Deployment Phase
 - [ ] Test complete workflow

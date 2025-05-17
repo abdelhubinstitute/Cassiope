@@ -5,7 +5,6 @@
 const express = require('express');
 const router = express.Router();
 const OpenAIService = require('./openai');
-const SupabaseService = require('./supabase');
 
 // POST /api/revision
 router.post('/', async (req, res) => {
