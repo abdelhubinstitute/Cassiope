@@ -405,20 +405,22 @@ class OpenAIService {
   /**
    * Generate 5 search topic ideas based on the main title / theme
    * @param {string} title
-   * @param {string} systemPrompt
+  * @param {string} prompt - Custom user prompt for topic generation
+  * @param {string} systemPrompt
    * @returns {Promise<Array<string>>}
    */
-  async generateSearchTopics(title, systemPrompt) {
+  async generateSearchTopics(title, prompt, systemPrompt) {
     const defaultSystemPrompt = 'You are an investigative journalist brainstorming sub-topics to research a subject on the web.';
     const finalSystemPrompt = systemPrompt || defaultSystemPrompt;
 
-    const userPrompt = `Propose 5 distinct, concise search queries that would help someone research the topic "${title}" thoroughly.\nReturn them as a simple numbered list.`;
+    const defaultUserPrompt = `Propose 5 distinct, concise search queries that would help someone research the topic "${title}" thoroughly.\nReturn them as a simple numbered list.`;
+    const finalUserPrompt = prompt || defaultUserPrompt;
 
     const response = await this.client.chat.completions.create({
       model: 'gpt-4o',
       messages: [
         { role: 'system', content: finalSystemPrompt },
-        { role: 'user', content: userPrompt }
+        { role: 'user', content: finalUserPrompt }
       ],
       temperature: 0.7,
       max_tokens: 300
