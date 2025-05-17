@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Article Workflow</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:2rem;max-width:800px}
+    input,textarea,select,button{font-size:1rem}
+    textarea{width:100%;min-height:120px}
+    .hidden{display:none}
+    .step{margin-bottom:2rem;padding:1rem;border:1px solid #ddd;border-radius:8px}
+    h2{margin-top:0}
+    ul{padding-left:1.2rem}
+    li{cursor:pointer;margin-bottom:4px}
+    li.selected{background:#e0f7fa}
+  </style>
+</head>
+<body>
+  <h1>AI Article Workflow</h1>
+
+  <div class="step" id="step-keys">
+    <h2>API Keys</h2>
+    <label>OpenAI <input type="text" id="openaiKey" placeholder="sk-..."/></label><br>
+    <label>FAL    <input type="text" id="falKey" placeholder="fal_..."/></label><br>
+    <!-- Perplexity key no longer needed -->
+    <button onclick="saveKeys()">Save Keys</button>
+    <span id="keysSaved" style="color:green;display:none">✔ Saved to browser</span>
+  </div>
+
+  <div class="step" id="step-topic">
+    <h2>1. Enter Topic</h2>
+    <input type="text" id="theme" placeholder="e.g. Solar Energy"/>
+    <br><textarea id="titleSystemPrompt" placeholder="Optional custom SYSTEM prompt for title generation"></textarea>
+    <textarea id="titleUserPrompt" placeholder="Optional custom USER prompt for title generation"></textarea>
+    <button onclick="generateTitles()">Generate Titles</button>
+    <ul id="titleList"></ul>
+  </div>
+
+  <div class="step hidden" id="step-topics">
+    <h2>2. Search Topics</h2>
+    <textarea id="topicsSystemPrompt" placeholder="Optional custom SYSTEM prompt for topic generation"></textarea>
+    <textarea id="topicsUserPrompt" placeholder="Optional custom USER prompt for topic generation"></textarea>
+    <button onclick="generateTopics()">Generate Topics</button>
+    <ul id="topicsList"></ul>
+    <input type="text" id="customTopic" placeholder="Add custom topic" />
+    <button onclick="addCustomTopic()">Add Topic</button>
+    <br>
+    <textarea id="researchSystemPrompt" placeholder="Optional custom SYSTEM prompt for research"></textarea>
+    <button id="generateResearchBtn" onclick="generateResearch()">Generate Research</button>
+    <pre id="researchOut">–</pre>
+  </div>
+
+  <div class="step hidden" id="step-outline">
+    <h2>3. Outline</h2>
+    <textarea id="outlineSystemPrompt" placeholder="Optional custom SYSTEM prompt for outline"></textarea>
+    <textarea id="outlineUserPrompt" placeholder="Optional custom USER prompt for outline"></textarea>
+    <button onclick="generateOutlines()">Generate Outlines</button>
+    <ul id="outlineList"></ul>
+  </div>
+
+  <div class="step hidden" id="step-draft">
+    <h2>4. Draft Article</h2>
+    <textarea id="draftSystemPrompt" placeholder="Optional custom SYSTEM prompt for draft"></textarea>
+    <textarea id="draftUserPrompt" placeholder="Optional custom USER prompt for draft"></textarea>
+    <button onclick="generateDraft()">Generate Draft</button>
+    <pre id="draftOut"></pre>
+    <h3>Your Feedback</h3>
+    <textarea id="userFeedback" placeholder="Type your comments here..."></textarea>
+    <textarea id="critiqueSystemPrompt" placeholder="Optional custom SYSTEM prompt for critique"></textarea>
+    <textarea id="critiqueUserPrompt" placeholder="Optional custom USER prompt for critique"></textarea>
+    <button onclick="generateCritiques()">Generate Critiques</button>
+  </div>
+
+  <div class="step hidden" id="step-critique">
+    <h2>5. Critiques</h2>
+    <ul id="critiqueList"></ul>
+  </div>
+
+  <div class="step hidden" id="step-revision">
+    <h2>6. Final Revision</h2>
+    <textarea id="revisionSystemPrompt" placeholder="Optional custom SYSTEM prompt for revision"></textarea>
+    <textarea id="revisionUserPrompt" placeholder="Optional custom USER prompt for revision"></textarea>
+    <button onclick="generateRevision()">Generate Final Article</button>
+    <pre id="revisionOut"></pre>
+  </div>
+
+  <div class="step hidden" id="step-image">
+    <h2>7. Featured Image</h2>
+    <textarea id="imageSystemPrompt" placeholder="Optional custom SYSTEM prompt for image prompt"></textarea>
+    <textarea id="imagePromptInput" placeholder="Optional: Provide custom image prompt"></textarea>
+    <button onclick="generateImage()">Generate Image</button>
+    <pre id="imagePromptOut"></pre>
+    <img id="featuredImg" style="max-width:100%;display:none" />
+    <br><button id="downloadImageBtn" class="hidden" onclick="downloadImage()">Download Image</button>
+  </div>
+
+  <div class="step hidden" id="step-html">
+    <h2>8. Generate HTML</h2>
+    <textarea id="htmlSystemPrompt" placeholder="Optional custom SYSTEM prompt for HTML"></textarea>
+    <textarea id="htmlUserPrompt" placeholder="Optional custom USER prompt for HTML"></textarea>
+    <button onclick="generateHTML()">Generate HTML</button>
+    <textarea id="htmlOut" style="width:100%;min-height:200px"></textarea>
+    <br><button id="downloadHtmlBtn" class="hidden" onclick="downloadHTML()">Download HTML</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html> 
