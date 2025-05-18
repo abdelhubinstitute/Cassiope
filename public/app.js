@@ -37,7 +37,7 @@ function getKeys(){
 function saveKeys(){
   const key=document.getElementById('openaiKey').value.trim();
   const fal=document.getElementById('falKey').value.trim();
-  if(!key){alert('Enter OpenAI key');return;}
+  if(!key){alert('Entrez la clé OpenAI');return;}
   localStorage.setItem('openaiKey',key);
   if(fal){localStorage.setItem('falKey',fal);}
   // validate key via backend
@@ -47,7 +47,7 @@ function saveKeys(){
       if(d.ok){
         document.getElementById('keysSaved').style.display='inline';
         document.getElementById('keysSaved').style.color='green';
-        document.getElementById('keysSaved').textContent='✔ Valid key saved';
+        document.getElementById('keysSaved').textContent='✔ Clé valide enregistrée';
         // Reveal the first workflow step
         show('step-topic');
         // Scroll to it for convenience
@@ -55,12 +55,12 @@ function saveKeys(){
       }else{
         document.getElementById('keysSaved').style.display='inline';
         document.getElementById('keysSaved').style.color='red';
-        document.getElementById('keysSaved').textContent='Invalid API key';
+        document.getElementById('keysSaved').textContent='Clé API invalide';
       }
     }).catch(()=>{
       document.getElementById('keysSaved').style.display='inline';
       document.getElementById('keysSaved').style.color='red';
-      document.getElementById('keysSaved').textContent='Key check failed';
+      document.getElementById('keysSaved').textContent='Vérification de la clé échouée';
     });
 }
 
@@ -77,7 +77,7 @@ loader.innerHTML = `<div class="flex flex-col items-center">
     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
   </svg>
-  <span>Loading...</span>
+  <span>Chargement...</span>
 </div>`;
 document.body.appendChild(loader);
 function showLoader(){loader.classList.remove('hidden');}
@@ -92,7 +92,7 @@ async function doFetch(url,options){
 async function generateTitles(){
   const theme=document.getElementById('theme').value.trim();
   const {openai}=getKeys();
-  if(!theme||!openai){alert('Need theme and OpenAI key');return;}
+  if(!theme||!openai){alert('Sujet et clé OpenAI nécessaires');return;}
   const res=await doFetch('/api/title',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({theme,apiKey:openai})});
   const data=await res.json();
   const list=document.getElementById('titleList');
@@ -120,13 +120,13 @@ async function generateTitles(){
 // Step 2: Generate Search Topics
 async function generateTopics(){
   const {openai}=getKeys();
-  if(!state.title||!openai){alert('Need title and OpenAI key');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Working...';
+  if(!state.title||!openai){alert('Titre et clé OpenAI nécessaires');return;}
+  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
   const res=await doFetch('/api/topics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,apiKey:openai})});
   const data=await res.json();
   state.topics=data.topics;
   renderTopics();
-  btn.disabled=false;btn.textContent='Generate Topics';
+  btn.disabled=false;btn.textContent='Générer des sujets';
   show('step-topics');
 }
 
@@ -158,22 +158,22 @@ async function generateResearch(){
   const {openai}=getKeys();
   const selected=[...document.querySelectorAll('#topicsList li.bg-primary-accent')].map(li=>li.textContent.trim());
   const topicsArr=selected.length?selected:state.topics;
-  if(topicsArr.length===0){alert('Select at least one topic or add some default topics to research.');return;}
+  if(topicsArr.length===0){alert('Sélectionnez au moins un sujet ou ajoutez-en pour la recherche.');return;}
   const btn=document.getElementById('generateResearchBtn');
-  btn.disabled=true;btn.textContent='Working...';
+  btn.disabled=true;btn.textContent='Traitement...';
   const res=await doFetch('/api/research',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topics:topicsArr,apiKey:openai})});
   const data=await res.json();
   state.research=data.research;
   document.getElementById('researchOut').textContent=data.research;
-  btn.disabled=false;btn.textContent='Generate Research';
+  btn.disabled=false;btn.textContent='Générer la recherche';
   show('step-outline');
 }
 
 // Step 4: Outlines
 async function generateOutlines(){
   const {openai}=getKeys();
-  if(!state.title||!state.research||!openai){alert('Need previous steps');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Working...';
+  if(!state.title||!state.research||!openai){alert('Étapes précédentes requises');return;}
+  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
   const res=await doFetch('/api/outline',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,apiKey:openai})});
   const data=await res.json();
   const list=document.getElementById('outlineList');clearList(list);
@@ -195,28 +195,28 @@ async function generateOutlines(){
     };
     list.appendChild(li);
   });
-  btn.disabled=false;btn.textContent='Generate Outlines';
+    btn.disabled=false;btn.textContent='Générer les plans';
 }
 
 // Step 5: Draft
 async function generateDraft(){
   const {openai}=getKeys();
-  if(!state.title||!state.research||!state.outline){alert('Need previous steps');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Working...';
+  if(!state.title||!state.research||!state.outline){alert('Étapes précédentes requises');return;}
+  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
   const res=await doFetch('/api/draft',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,outline:state.outline,apiKey:openai})});
   const data=await res.json();
   state.draft=data.draft;
   document.getElementById('draftOut').textContent=data.draft;
-  btn.disabled=false;btn.textContent='Generate Draft';
+    btn.disabled=false;btn.textContent='Générer le brouillon';
 }
 
 // Step 6: Critiques
 async function generateCritiques(){
   const {openai}=getKeys();
   const feedback=document.getElementById('userFeedback').value.trim();
-  if(!state.draft){alert('Generate draft first');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Working...';
-  const res=await doFetch('/api/critique',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({draft:state.draft,userFeedback:feedback||'No feedback provided',apiKey:openai})});
+    if(!state.draft){alert('Générez d'abord le brouillon');return;}
+  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
+  const res=await doFetch('/api/critique',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({draft:state.draft,userFeedback:feedback||'Aucun retour fourni',apiKey:openai})});
   const data=await res.json();
   const list=document.getElementById('critiqueList');clearList(list);
   const selectedClasses = ['bg-primary-accent', 'bg-opacity-10', 'text-primary-accent', 'font-semibold', 'border-primary-accent'];
@@ -237,28 +237,28 @@ async function generateCritiques(){
     };
     list.appendChild(li);
   });
-  btn.disabled=false;btn.textContent='Generate Critiques';
+    btn.disabled=false;btn.textContent='Générer les critiques';
   show('step-critique');
 }
 
 // Step 7: Revision
 async function generateRevision(){
   const {openai}=getKeys();
-  if(!state.critique){alert('Select critique');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Working...';
+  if(!state.critique){alert('Sélectionnez une critique');return;}
+  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
   const res=await doFetch('/api/revision',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,outline:state.outline,draft:state.draft,critique:state.critique,apiKey:openai})});
   const data=await res.json();
   state.revision=data.revision;
   document.getElementById('revisionOut').textContent=data.revision;
-  btn.disabled=false;btn.textContent='Generate Final Article';
+  btn.disabled=false;btn.textContent="Générer l'article final";
   show('step-image');
 }
 
 // Step 8: Image
 async function generateImage(){
   const {openai}=getKeys();
-  if(!state.revision){alert('Generate revised article first');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Working...';
+  if(!state.revision){alert('Générez d\'abord l\'article révisé');return;}
+  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
   const res=await doFetch('/api/image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({article:state.revision,apiKey:openai,falKey:getKeys().fal})});
   const data=await res.json();
   state.imageUrl=data.imageUrl;
@@ -266,27 +266,27 @@ async function generateImage(){
   document.getElementById('featuredImg').style.display='block';
   document.getElementById('downloadImageBtn').classList.remove('hidden');
   document.getElementById('imagePromptOut').textContent=data.imagePrompt;
-  btn.disabled=false;btn.textContent='Generate Image';
+  btn.disabled=false;btn.textContent='Générer l\'image';
   show('step-html');
 }
 
 // Step 9: HTML
 async function generateHTML(){
   const {openai}=getKeys();
-  if(!state.revision||!state.imageUrl){alert('Need article and image');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Working...';
+  if(!state.revision||!state.imageUrl){alert('Article et image requis');return;}
+  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
   const payload={article:state.revision,apiKey:openai};
   if(state.imageUrl && !state.imageUrl.startsWith('data:')){payload.imageUrl=state.imageUrl;}
   const res=await doFetch('/api/html',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   const data=await res.json();
   state.html=data.html;
   document.getElementById('htmlOut').value=data.html;
-  btn.disabled=false;btn.textContent='Generate HTML';
+  btn.disabled=false;btn.textContent='Générer le HTML';
   show('downloadHtmlBtn');
 }
 
 function downloadHTML(){
-  if(!state.html){alert('No HTML generated');return;}
+  if(!state.html){alert('Aucun HTML généré');return;}
   const blob=new Blob([state.html],{type:'text/html'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
@@ -297,7 +297,7 @@ function downloadHTML(){
 }
 
 function downloadImage(){
-  if(!state.imageUrl){alert('No image yet');return;}
+  if(!state.imageUrl){alert('Pas encore d\'image');return;}
   const link=document.createElement('a');
   link.href=state.imageUrl;
   link.download='featured.png';

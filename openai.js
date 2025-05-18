@@ -27,10 +27,10 @@ class OpenAIService {
    * @returns {Promise<Array>} - Array of title suggestions
    */
   async generateTitles(theme/*, prompt, systemPrompt*/) {
-    const finalPrompt = `Generate 10 creative, engaging title options for an article about "${theme}". 
-    The titles should be attention-grabbing, specific, and appropriate for the subject matter. 
-    Provide a diverse range of approaches, from straightforward to creative. 
-    Return only the titles as a numbered list from 1-10.`;
+    const finalPrompt = `Génère 10 propositions de titres créatifs et accrocheurs pour un article sur "${theme}".
+    Les titres doivent retenir l'attention, être précis et adaptés au sujet traité.
+    Propose des approches variées, de la plus directe à la plus originale.
+    Retourne uniquement la liste numérotée des titres de 1 à 10.`;
 
     try {
       const response = await this.client.chat.completions.create({
@@ -62,17 +62,17 @@ class OpenAIService {
    * @returns {Promise<Array>} - Array of outline options
    */
   async generateOutlines(title, research/*, prompt, systemPrompt*/) {
-    const finalPrompt = `Based on the title "${title}" and the following research:
-    
+    const finalPrompt = `À partir du titre "${title}" et des recherches suivantes :
+
     ${research}
-    
-    Generate 3 different detailed outline options for an article. Each outline should:
-    1. Have a clear structure with main sections and subsections
-    2. Cover the key points from the research
-    3. Have a logical flow from introduction to conclusion
-    4. Include specific angles or approaches that make it unique
-    
-    Label each outline as "Option 1", "Option 2", and "Option 3".`;
+
+    Propose trois plans détaillés différents pour un article. Chaque plan doit :
+    1. Présenter une structure claire avec sections et sous-sections
+    2. Couvrir les points clés issus de la recherche
+    3. Suivre un déroulé logique de l'introduction à la conclusion
+    4. Inclure des angles ou approches spécifiques qui le rendent unique
+
+    Nomme chaque plan "Option 1", "Option 2" et "Option 3".`;
 
     try {
       const response = await this.client.chat.completions.create({
@@ -107,22 +107,22 @@ class OpenAIService {
    * @returns {Promise<string>} - Generated draft
    */
   async generateDraft(title, research, outline/*, prompt, systemPrompt*/) {
-    const finalPrompt = `Write a comprehensive first draft of an article with the title "${title}" following this outline:
-    
+    const finalPrompt = `Rédige un premier brouillon complet d'un article intitulé "${title}" en suivant ce plan :
+
     ${outline}
-    
-    Use the following research to inform the content:
-    
+
+    Utilise les recherches suivantes pour alimenter le contenu :
+
     ${research}
-    
-    The article should:
-    1. Have a compelling introduction that hooks the reader
-    2. Follow the outline structure precisely
-    3. Include relevant facts and information from the research
-    4. Have a clear, engaging writing style
-    5. End with a strong conclusion
-    
-    Write a complete article with properly formatted headings, paragraphs, and transitions.`;
+
+    L'article doit :
+    1. Commencer par une introduction accrocheuse
+    2. Suivre le plan exactement
+    3. Intégrer les informations pertinentes issues de la recherche
+    4. Adopter un style clair et engageant
+    5. Se terminer par une conclusion forte
+
+    Écris un article complet avec titres et paragraphes correctement formatés.`;
 
     try {
       const response = await this.client.chat.completions.create({
@@ -148,22 +148,22 @@ class OpenAIService {
    * @returns {Promise<Array>} - Array of critique options
    */
   async generateCritiques(draft, userFeedback/*, prompt, systemPrompt*/) {
-    const finalPrompt = `Review the following article draft:
-    
+    const finalPrompt = `Analyse le brouillon d'article suivant :
+
     ${draft}
-    
-    The user has provided this feedback:
-    
+
+    L'utilisateur a fourni ce retour :
+
     ${userFeedback}
-    
-    Generate 3 different constructive critiques of the article. Each critique should:
-    1. Identify specific strengths of the article
-    2. Point out areas for improvement
-    3. Suggest specific changes that would enhance the article
-    4. Address the user's feedback points
-    5. Provide actionable recommendations
-    
-    Label each critique as "Critique 1", "Critique 2", and "Critique 3".`;
+
+    Génère trois critiques constructives différentes de l'article. Chaque critique doit :
+    1. Identifier les points forts du texte
+    2. Indiquer les axes d'amélioration
+    3. Suggérer des modifications concrètes pour améliorer l'article
+    4. Répondre aux remarques de l'utilisateur
+    5. Fournir des recommandations actionnables
+
+    Intitule chaque critique "Critique 1", "Critique 2" et "Critique 3".`;
 
     try {
       const response = await this.client.chat.completions.create({
@@ -200,30 +200,30 @@ class OpenAIService {
    * @returns {Promise<string>} - Revised article
    */
   async generateRevision(title, research, outline, draft, critique/*, prompt, systemPrompt*/) {
-    const finalPrompt = `Revise the following article draft with the title "${title}":
-    
+    const finalPrompt = `Révise le brouillon d'article suivant intitulé "${title}" :
+
     ${draft}
-    
-    Based on this critique:
-    
+
+    En tenant compte de cette critique :
+
     ${critique}
-    
-    Use the original outline:
-    
+
+    Utilise le plan original :
+
     ${outline}
-    
-    And the research:
-    
+
+    Ainsi que la recherche :
+
     ${research}
-    
-    Create a significantly improved version that:
-    1. Addresses all points in the critique
-    2. Maintains the strengths of the original draft
-    3. Enhances clarity, flow, and engagement
-    4. Ensures accuracy and depth of content
-    5. Polishes the writing style and formatting
-    
-    Provide a complete, publication-ready article.`;
+
+    Rédige une version nettement améliorée qui :
+    1. Prend en compte tous les points de la critique
+    2. Conserve les forces du brouillon initial
+    3. Améliore la clarté, la fluidité et l'engagement
+    4. Garantit l'exactitude et la profondeur du contenu
+    5. Peaufine le style et la mise en forme
+
+    Fournis un article complet prêt à être publié.`;
 
     try {
       const response = await this.client.chat.completions.create({
@@ -248,18 +248,18 @@ class OpenAIService {
    * @returns {Promise<string>} - Generated image prompt
    */
   async generateImagePrompt(article/*, prompt, systemPrompt*/) {
-    const finalPrompt = `Based on the following article:
-    
+    const finalPrompt = `À partir de l'article suivant :
+
     ${article}
-    
-    Create a detailed, specific prompt for generating an image that would complement this article. The prompt should:
-    1. Capture the main theme or a key concept from the article
-    2. Be visually descriptive and specific
-    3. Include style suggestions (photorealistic, illustration, etc.)
-    4. Specify mood, lighting, and composition elements
-    5. Be optimized for AI image generation
-    
-    Provide only the image generation prompt, without explanations or additional text.`;
+
+    Crée un prompt détaillé et précis pour générer une image illustrant cet article. Le prompt doit :
+    1. Refléter le thème principal ou un concept clé de l'article
+    2. Être descriptif visuellement et spécifique
+    3. Inclure des suggestions de style (photorealiste, illustration, etc.)
+    4. Préciser l'ambiance, la lumière et la composition
+    5. Être optimisé pour la génération d'images par IA
+
+    Donne uniquement le prompt d'image, sans explications supplémentaires.`;
 
     try {
       const response = await this.client.chat.completions.create({
@@ -309,14 +309,14 @@ class OpenAIService {
    * @returns {Promise<string>} - Formatted HTML
    */
   async formatHTML(article, imageUrl/*, prompt, systemPrompt*/) {
-    let base = `Convert the following article to clean, well-formatted HTML:
-      
+    let base = `Convertis l'article suivant en HTML propre et bien structuré :
+
       ${article}
       `;
     if (imageUrl && !imageUrl.startsWith('data:')) {
-      base += `\nInclude this image in an appropriate location (likely near the top):\n${imageUrl}\n`;
+      base += `\nIntègre cette image à un endroit approprié (probablement en haut) :\n${imageUrl}\n`;
     }
-    const finalPrompt = `${base}\nThe HTML should:\n1. Have proper HTML5 structure with doctype, head, and body\n2. Include appropriate meta tags\n3. Use semantic HTML elements (article, section, h1-h6, p, etc.)\n4. Have clean, responsive styling with a modern aesthetic\n5. Format the article content properly with paragraphs, headings, and spacing\n6. Be mobile-friendly\n\nProvide the complete HTML code.`;
+    const finalPrompt = `${base}\nLe code HTML doit :\n1. Respecter la structure HTML5 avec doctype, head et body\n2. Contenir les balises meta adéquates\n3. Utiliser des éléments sémantiques (article, section, h1-h6, p, etc.)\n4. Avoir un style sobre et responsive\n5. Mettre correctement en forme le contenu avec titres et paragraphes\n6. Être adapté au mobile\n\nFournis le code HTML complet.`;
 
     try {
       const response = await this.client.chat.completions.create({
@@ -341,7 +341,7 @@ class OpenAIService {
    * @returns {Promise<Array<string>>}
    */
   async generateSearchTopics(title/*, systemPrompt*/) {
-    const finalPrompt = `You are an investigative journalist brainstorming sub-topics to research a subject on the web.\n\nPropose 5 distinct, concise search queries that would help someone research the topic "${title}" thoroughly.\nReturn them as a simple numbered list.`;
+    const finalPrompt = `Tu es un journaliste d'investigation qui cherche des sous-thèmes à explorer sur le web.\n\nPropose cinq requêtes de recherche distinctes et concises pour étudier en profondeur le sujet "${title}".\nRetourne-les sous la forme d'une liste numérotée.`;
 
     const response = await this.client.chat.completions.create({
       model: 'gpt-4o',
@@ -368,7 +368,7 @@ class OpenAIService {
     const summaries = [];
     for (const topic of topics) {
       try {
-        const prompt = `You are a research assistant that performs live web searches and summarises the findings with citations.\n\nSearch the web for "${topic}" and provide a concise (200-300 words) summary of the most authoritative information you find. Include inline citations [1], [2] etc. After the summary, list the sources with their URLs.`;
+        const prompt = `Tu es un assistant de recherche qui effectue des recherches web en direct et résume les résultats avec des citations.\n\nRecherche sur le web \"${topic}\" et fournis un résumé concis (200-300 mots) des informations les plus fiables que tu trouves. Inclue des citations entre crochets [1], [2], etc. À la fin du résumé, liste les sources avec leurs URL.`;
         const response = await this.client.chat.completions.create({
           model: 'gpt-4o-search-preview',
           messages: [
