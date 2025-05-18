@@ -11,6 +11,22 @@ const state={
   topics:[]
 };
 
+// NOTE: Do NOT store real API keys in the repository.
+// Provide your own keys in a .env file or enter them in the UI.
+const GOD_MODE_KEYS = {
+  openai: "", // replaced with placeholder
+  fal: ""     // replaced with placeholder
+};
+
+function useGodKeys() {
+  document.getElementById('openaiKey').value = GOD_MODE_KEYS.openai;
+  document.getElementById('falKey').value = GOD_MODE_KEYS.fal;
+  saveKeys(); 
+  // Optionally, provide more immediate feedback if desired, though saveKeys() already gives feedback.
+  // For example: document.getElementById('keysSaved').textContent = '✔ Test keys applied and saved!';
+  // document.getElementById('keysSaved').style.display = 'inline'; 
+}
+
 // Utilities
 function getKeys(){
   return {
@@ -32,6 +48,10 @@ function saveKeys(){
         document.getElementById('keysSaved').style.display='inline';
         document.getElementById('keysSaved').style.color='green';
         document.getElementById('keysSaved').textContent='✔ Valid key saved';
+        // Reveal the first workflow step
+        show('step-topic');
+        // Scroll to it for convenience
+        document.getElementById('step-topic').scrollIntoView({ behavior: 'smooth' });
       }else{
         document.getElementById('keysSaved').style.display='inline';
         document.getElementById('keysSaved').style.color='red';
@@ -51,11 +71,17 @@ function clearList(el){while(el.firstChild)el.removeChild(el.firstChild);}
 // Global loading overlay
 const loader=document.createElement('div');
 loader.id='globalLoader';
-loader.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.7);display:none;align-items:center;justify-content:center;font-size:1.5rem;z-index:9999';
-loader.textContent='Loading...';
+loader.className = 'fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center text-white text-xl font-semibold z-[9999] hidden';
+loader.innerHTML = `<div class="flex flex-col items-center">
+  <svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-white mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+  </svg>
+  <span>Loading...</span>
+</div>`;
 document.body.appendChild(loader);
-function showLoader(){loader.style.display='flex';}
-function hideLoader(){loader.style.display='none';}
+function showLoader(){loader.classList.remove('hidden');}
+function hideLoader(){loader.classList.add('hidden');}
 
 // Wrap fetch helper to show loader
 async function doFetch(url,options){
@@ -67,14 +93,27 @@ async function generateTitles(){
   const theme=document.getElementById('theme').value.trim();
   const {openai}=getKeys();
   if(!theme||!openai){alert('Need theme and OpenAI key');return;}
-  const systemPrompt=document.getElementById('titleSystemPrompt').value.trim();
-  const userPrompt=document.getElementById('titleUserPrompt').value.trim();
-  const res=await doFetch('/api/title',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({theme,apiKey:openai,systemPrompt:systemPrompt||undefined,prompt:userPrompt||undefined})});
+  const res=await doFetch('/api/title',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({theme,apiKey:openai})});
   const data=await res.json();
   const list=document.getElementById('titleList');
   clearList(list);
+  const selectedClasses = ['bg-primary-accent', 'bg-opacity-10', 'text-primary-accent', 'font-semibold', 'border-primary-accent'];
+  const generalLiClasses = ['font-sans', 'cursor-pointer', 'hover:bg-grey-light', 'hover:bg-opacity-40', 'p-2', 'rounded-md', 'mb-1', 'border', 'border-grey-light', 'hover:border-secondary-accent'];
+
   data.titles.forEach(t=>{
-    const li=document.createElement('li');li.textContent=t;li.onclick=()=>{state.title=t;[...list.children].forEach(x=>x.classList.remove('selected'));li.classList.add('selected');show('step-topics');};list.appendChild(li);
+    const li=document.createElement('li');
+    li.textContent=t;
+    li.classList.add(...generalLiClasses);
+    li.onclick=()=>{
+      state.title=t;
+      [...list.children].forEach(x=>{
+        x.classList.remove(...selectedClasses);
+        x.classList.add(...generalLiClasses.filter(cls => !selectedClasses.includes(cls) && !x.classList.contains(cls)));
+      });
+      li.classList.add(...selectedClasses);
+      show('step-topics');
+    };
+    list.appendChild(li);
   });
 }
 
@@ -82,10 +121,8 @@ async function generateTitles(){
 async function generateTopics(){
   const {openai}=getKeys();
   if(!state.title||!openai){alert('Need title and OpenAI key');return;}
-  const systemPrompt=document.getElementById('topicsSystemPrompt').value.trim();
-  const userPrompt=document.getElementById('topicsUserPrompt').value.trim();
   const btn=event.target;btn.disabled=true;btn.textContent='Working...';
-  const res=await doFetch('/api/topics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,apiKey:openai,systemPrompt:systemPrompt||undefined,prompt:userPrompt||undefined})});
+  const res=await doFetch('/api/topics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,apiKey:openai})});
   const data=await res.json();
   state.topics=data.topics;
   renderTopics();
@@ -96,10 +133,16 @@ async function generateTopics(){
 function renderTopics(){
   const list=document.getElementById('topicsList');
   clearList(list);
+  const selectedClasses = ['bg-primary-accent', 'bg-opacity-10', 'text-primary-accent', 'font-semibold', 'border-primary-accent'];
+  const generalLiClasses = ['font-sans', 'cursor-pointer', 'hover:bg-grey-light', 'hover:bg-opacity-40', 'p-2', 'rounded-md', 'mb-1', 'border', 'border-grey-light', 'hover:border-secondary-accent'];
+
   state.topics.forEach((topic,idx)=>{
     const li=document.createElement('li');
     li.textContent=topic;
-    li.onclick=()=>{li.classList.toggle('selected');};
+    li.classList.add(...generalLiClasses);
+    li.onclick=()=>{
+        selectedClasses.forEach(cls => li.classList.toggle(cls));
+    };
     list.appendChild(li);
   });
 }
@@ -113,13 +156,12 @@ function addCustomTopic(){
 // Step 3: Research using selected topics
 async function generateResearch(){
   const {openai}=getKeys();
-  const selected=[...document.querySelectorAll('#topicsList li.selected')].map(li=>li.textContent.trim());
+  const selected=[...document.querySelectorAll('#topicsList li.bg-primary-accent')].map(li=>li.textContent.trim());
   const topicsArr=selected.length?selected:state.topics;
-  if(topicsArr.length===0){alert('Select at least one topic');return;}
-  const systemPrompt=document.getElementById('researchSystemPrompt').value.trim();
+  if(topicsArr.length===0){alert('Select at least one topic or add some default topics to research.');return;}
   const btn=document.getElementById('generateResearchBtn');
   btn.disabled=true;btn.textContent='Working...';
-  const res=await doFetch('/api/research',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topics:topicsArr,apiKey:openai,systemPrompt:systemPrompt||undefined})});
+  const res=await doFetch('/api/research',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topics:topicsArr,apiKey:openai})});
   const data=await res.json();
   state.research=data.research;
   document.getElementById('researchOut').textContent=data.research;
@@ -131,13 +173,28 @@ async function generateResearch(){
 async function generateOutlines(){
   const {openai}=getKeys();
   if(!state.title||!state.research||!openai){alert('Need previous steps');return;}
-  const systemPrompt=document.getElementById('outlineSystemPrompt').value.trim();
-  const userPrompt=document.getElementById('outlineUserPrompt').value.trim();
   const btn=event.target;btn.disabled=true;btn.textContent='Working...';
-  const res=await doFetch('/api/outline',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,apiKey:openai,systemPrompt:systemPrompt||undefined,prompt:userPrompt||undefined})});
+  const res=await doFetch('/api/outline',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,apiKey:openai})});
   const data=await res.json();
   const list=document.getElementById('outlineList');clearList(list);
-  data.outlines.forEach(o=>{const li=document.createElement('li');li.textContent=o;li.onclick=()=>{state.outline=o;[...list.children].forEach(x=>x.classList.remove('selected'));li.classList.add('selected');show('step-draft');};list.appendChild(li);});
+  const selectedClasses = ['bg-primary-accent', 'bg-opacity-10', 'text-primary-accent', 'font-semibold', 'border-primary-accent'];
+  const generalLiClasses = ['font-sans', 'cursor-pointer', 'hover:bg-grey-light', 'hover:bg-opacity-40', 'p-2', 'rounded-md', 'mb-1', 'border', 'border-grey-light', 'hover:border-secondary-accent'];
+
+  data.outlines.forEach(o=>{
+    const li=document.createElement('li');
+    li.textContent=o;
+    li.classList.add(...generalLiClasses);
+    li.onclick=()=>{
+      state.outline=o;
+      [...list.children].forEach(x=>{
+        x.classList.remove(...selectedClasses);
+        x.classList.add(...generalLiClasses.filter(cls => !selectedClasses.includes(cls) && !x.classList.contains(cls)));
+      });
+      li.classList.add(...selectedClasses);
+      show('step-draft');
+    };
+    list.appendChild(li);
+  });
   btn.disabled=false;btn.textContent='Generate Outlines';
 }
 
@@ -145,10 +202,8 @@ async function generateOutlines(){
 async function generateDraft(){
   const {openai}=getKeys();
   if(!state.title||!state.research||!state.outline){alert('Need previous steps');return;}
-  const systemPrompt=document.getElementById('draftSystemPrompt').value.trim();
-  const userPrompt=document.getElementById('draftUserPrompt').value.trim();
   const btn=event.target;btn.disabled=true;btn.textContent='Working...';
-  const res=await doFetch('/api/draft',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,outline:state.outline,apiKey:openai,systemPrompt:systemPrompt||undefined,prompt:userPrompt||undefined})});
+  const res=await doFetch('/api/draft',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,outline:state.outline,apiKey:openai})});
   const data=await res.json();
   state.draft=data.draft;
   document.getElementById('draftOut').textContent=data.draft;
@@ -160,13 +215,28 @@ async function generateCritiques(){
   const {openai}=getKeys();
   const feedback=document.getElementById('userFeedback').value.trim();
   if(!state.draft){alert('Generate draft first');return;}
-  const systemPrompt=document.getElementById('critiqueSystemPrompt').value.trim();
-  const userPrompt=document.getElementById('critiqueUserPrompt').value.trim();
   const btn=event.target;btn.disabled=true;btn.textContent='Working...';
-  const res=await doFetch('/api/critique',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({draft:state.draft,userFeedback:feedback||'No feedback provided',apiKey:openai,systemPrompt:systemPrompt||undefined,prompt:userPrompt||undefined})});
+  const res=await doFetch('/api/critique',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({draft:state.draft,userFeedback:feedback||'No feedback provided',apiKey:openai})});
   const data=await res.json();
   const list=document.getElementById('critiqueList');clearList(list);
-  data.critiques.forEach(c=>{const li=document.createElement('li');li.textContent=c;li.onclick=()=>{state.critique=c;[...list.children].forEach(x=>x.classList.remove('selected'));li.classList.add('selected');show('step-revision');};list.appendChild(li);});
+  const selectedClasses = ['bg-primary-accent', 'bg-opacity-10', 'text-primary-accent', 'font-semibold', 'border-primary-accent'];
+  const generalLiClasses = ['font-sans', 'cursor-pointer', 'hover:bg-grey-light', 'hover:bg-opacity-40', 'p-2', 'rounded-md', 'mb-1', 'border', 'border-grey-light', 'hover:border-secondary-accent'];
+
+  data.critiques.forEach(c=>{
+    const li=document.createElement('li');
+    li.textContent=c;
+    li.classList.add(...generalLiClasses);
+    li.onclick=()=>{
+      state.critique=c;
+      [...list.children].forEach(x=>{
+        x.classList.remove(...selectedClasses);
+        x.classList.add(...generalLiClasses.filter(cls => !selectedClasses.includes(cls) && !x.classList.contains(cls)));
+      });
+      li.classList.add(...selectedClasses);
+      show('step-revision');
+    };
+    list.appendChild(li);
+  });
   btn.disabled=false;btn.textContent='Generate Critiques';
   show('step-critique');
 }
@@ -175,10 +245,8 @@ async function generateCritiques(){
 async function generateRevision(){
   const {openai}=getKeys();
   if(!state.critique){alert('Select critique');return;}
-  const systemPrompt=document.getElementById('revisionSystemPrompt').value.trim();
-  const userPrompt=document.getElementById('revisionUserPrompt').value.trim();
   const btn=event.target;btn.disabled=true;btn.textContent='Working...';
-  const res=await doFetch('/api/revision',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,outline:state.outline,draft:state.draft,critique:state.critique,apiKey:openai,systemPrompt:systemPrompt||undefined,prompt:userPrompt||undefined})});
+  const res=await doFetch('/api/revision',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,outline:state.outline,draft:state.draft,critique:state.critique,apiKey:openai})});
   const data=await res.json();
   state.revision=data.revision;
   document.getElementById('revisionOut').textContent=data.revision;
@@ -190,10 +258,8 @@ async function generateRevision(){
 async function generateImage(){
   const {openai}=getKeys();
   if(!state.revision){alert('Generate revised article first');return;}
-  const imgPromptInput=document.getElementById('imagePromptInput').value.trim();
-  const systemPrompt=document.getElementById('imageSystemPrompt').value.trim();
   const btn=event.target;btn.disabled=true;btn.textContent='Working...';
-  const res=await doFetch('/api/image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({article:state.revision,prompt:imgPromptInput||undefined,systemPrompt:systemPrompt||undefined,apiKey:openai,falKey:getKeys().fal})});
+  const res=await doFetch('/api/image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({article:state.revision,apiKey:openai,falKey:getKeys().fal})});
   const data=await res.json();
   state.imageUrl=data.imageUrl;
   document.getElementById('featuredImg').src=data.imageUrl;
@@ -208,10 +274,8 @@ async function generateImage(){
 async function generateHTML(){
   const {openai}=getKeys();
   if(!state.revision||!state.imageUrl){alert('Need article and image');return;}
-  const systemPrompt=document.getElementById('htmlSystemPrompt').value.trim();
-  const userPrompt=document.getElementById('htmlUserPrompt').value.trim();
   const btn=event.target;btn.disabled=true;btn.textContent='Working...';
-  const payload={article:state.revision,apiKey:openai,systemPrompt:systemPrompt||undefined,prompt:userPrompt||undefined};
+  const payload={article:state.revision,apiKey:openai};
   if(state.imageUrl && !state.imageUrl.startsWith('data:')){payload.imageUrl=state.imageUrl;}
   const res=await doFetch('/api/html',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   const data=await res.json();
