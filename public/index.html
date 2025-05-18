@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HUB Institute - AI Article Workflow</title>
+  <title>HUB Institute - Workflow d'Article IA</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,175 +55,175 @@
   <header class="bg-primary-dark py-6 px-8 shadow-lg">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
       <img src="https://cdn.prod.website-files.com/6488dd9f0d8ff8a9884d8482/64e4bfb70506b423790fe99e_logo-hubinstitute.png" alt="HUB Institute Logo" class="h-12">
-      <h1 class="font-heading text-3xl font-bold text-neutral-light">AI Article Workflow</h1>
+      <h1 class="font-heading text-3xl font-bold text-neutral-light">Workflow d'Article IA</h1>
     </div>
   </header>
   
   <main class="p-8 max-w-4xl mx-auto">
     <div class="step bg-neutral-light p-6 rounded-lg shadow-md mb-8" id="step-keys">
-      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">API Keys</h2>
+        <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">Clés API</h2>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="openaiKey">OpenAI API Key</label>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="openaiKey">Clé API OpenAI</label>
         <input type="text" id="openaiKey" placeholder="sk-..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent"/>
       </div>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="falKey">FAL API Key</label>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="falKey">Clé API FAL</label>
         <input type="text" id="falKey" placeholder="fal_..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent"/>
       </div>
       <!-- Perplexity key no longer needed -->
       <div class="flex items-center space-x-3 mt-6">
-        <button onclick="saveKeys()" class="bg-primary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-accent focus:ring-opacity-50">Save Keys</button>
-        <button onclick="useGodKeys()" class="bg-error hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-error focus:ring-opacity-50">Use Test Keys (GOD MODE)</button>
+          <button onclick="saveKeys()" class="bg-primary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-accent focus:ring-opacity-50">Enregistrer les clés</button>
+          <button onclick="useGodKeys()" class="bg-error hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-error focus:ring-opacity-50">Utiliser les clés de test (GOD MODE)</button>
       </div>
-      <span id="keysSaved" class="block mt-3 text-sm text-success hidden">✔ Saved to browser</span>
+        <span id="keysSaved" class="block mt-3 text-sm text-success hidden">✔ Enregistré dans le navigateur</span>
     </div>
 
     <div class="step hidden bg-neutral-light p-6 rounded-lg shadow-md mb-8" id="step-topic">
-      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">1. Enter Topic</h2>
+        <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">1. Saisir le sujet</h2>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="theme">Topic/Theme</label>
-        <input type="text" id="theme" placeholder="e.g. The Future of Renewable Energy" class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent"/>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="theme">Sujet/Thème</label>
+          <input type="text" id="theme" placeholder="ex. L'avenir des énergies renouvelables" class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent"/>
       </div>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="titleSystemPrompt">Optional: System Prompt for Title Generation</label>
-        <textarea id="titleSystemPrompt" placeholder="Guide the AI for title creation... e.g., Generate catchy titles for a blog post aimed at tech professionals." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="titleSystemPrompt">Optionnel : prompt système pour la génération de titres</label>
+          <textarea id="titleSystemPrompt" placeholder="Guide l'IA pour la création de titres... ex. Génère des titres accrocheurs pour un article destiné aux professionnels de la tech." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="titleUserPrompt">Optional: User Prompt for Title Generation</label>
-        <textarea id="titleUserPrompt" placeholder="Your specific instructions or keywords for the titles... e.g., Focus on innovation and sustainability." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="titleUserPrompt">Optionnel : prompt utilisateur pour la génération de titres</label>
+          <textarea id="titleUserPrompt" placeholder="Vos instructions ou mots clés pour les titres... ex. Mettre l'accent sur l'innovation et la durabilité." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
-      <button onclick="generateTitles()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50">Generate Titles</button>
+        <button onclick="generateTitles()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50">Générer des titres</button>
       <ul id="titleList" class="mt-6 space-y-2 list-disc pl-5"></ul>
     </div>
 
     <div class="step hidden bg-neutral-light p-6 rounded-lg shadow-md mb-8" id="step-topics">
-      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">2. Search Topics</h2>
+        <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">2. Rechercher des sujets</h2>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="topicsSystemPrompt">Optional: System Prompt for Topic Generation</label>
-        <textarea id="topicsSystemPrompt" placeholder="Guide the AI for topic generation..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="topicsSystemPrompt">Optionnel : prompt système pour la génération de sujets</label>
+          <textarea id="topicsSystemPrompt" placeholder="Guide l'IA pour générer des sujets..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="topicsUserPrompt">Optional: User Prompt for Topic Generation</label>
-        <textarea id="topicsUserPrompt" placeholder="Your specific instructions..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="topicsUserPrompt">Optionnel : prompt utilisateur pour la génération de sujets</label>
+          <textarea id="topicsUserPrompt" placeholder="Vos instructions spécifiques..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
-      <button onclick="generateTopics()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50 mb-6">Generate Topics</button>
+        <button onclick="generateTopics()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50 mb-6">Générer des sujets</button>
       
-      <label class="block font-heading text-sm font-medium text-text-main mb-1">Generated Topics (select to use for research)</label>
+        <label class="block font-heading text-sm font-medium text-text-main mb-1">Sujets générés (sélectionnez pour la recherche)</label>
       <ul id="topicsList" class="mb-6 space-y-2 list-disc pl-5"></ul>
       
       <div class="flex items-center mb-6 space-x-2">
-          <input type="text" id="customTopic" placeholder="Add custom topic manually" class="flex-grow font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent" />
-          <button onclick="addCustomTopic()" class="bg-green-500 hover:bg-green-600 text-neutral-light font-heading font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">Add Topic</button>
+            <input type="text" id="customTopic" placeholder="Ajouter manuellement un sujet" class="flex-grow font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent" />
+            <button onclick="addCustomTopic()" class="bg-green-500 hover:bg-green-600 text-neutral-light font-heading font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">Ajouter le sujet</button>
       </div>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="researchSystemPrompt">Optional: System Prompt for Research</label>
-        <textarea id="researchSystemPrompt" placeholder="Guide the AI for research..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="researchSystemPrompt">Optionnel : prompt système pour la recherche</label>
+          <textarea id="researchSystemPrompt" placeholder="Guide l'IA pour la recherche..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
-      <button id="generateResearchBtn" onclick="generateResearch()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50">Generate Research</button>
-      <label class="block font-heading text-sm font-medium text-text-main mt-6 mb-1" for="researchOut">Research Output</label>
+        <button id="generateResearchBtn" onclick="generateResearch()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50">Générer la recherche</button>
+        <label class="block font-heading text-sm font-medium text-text-main mt-6 mb-1" for="researchOut">Résultat de la recherche</label>
       <pre id="researchOut" class="mt-2 font-sans bg-grey-light bg-opacity-20 p-4 rounded-md overflow-x-auto text-sm min-h-[100px]">–</pre>
     </div>
 
     <div class="step hidden bg-neutral-light p-6 rounded-lg shadow-md mb-8" id="step-outline">
-      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">3. Outline</h2>
+        <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">3. Plan détaillé</h2>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="outlineSystemPrompt">Optional: System Prompt for Outline Generation</label>
-        <textarea id="outlineSystemPrompt" placeholder="Guide the AI for outline generation..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="outlineSystemPrompt">Optionnel : prompt système pour la création du plan</label>
+          <textarea id="outlineSystemPrompt" placeholder="Guide l'IA pour générer le plan..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="outlineUserPrompt">Optional: User Prompt for Outline Generation</label>
-        <textarea id="outlineUserPrompt" placeholder="Your specific instructions..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="outlineUserPrompt">Optionnel : prompt utilisateur pour la création du plan</label>
+          <textarea id="outlineUserPrompt" placeholder="Vos instructions spécifiques..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
-      <button onclick="generateOutlines()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50">Generate Outlines</button>
-      <label class="block font-heading text-sm font-medium text-text-main mt-6 mb-1">Generated Outlines (select one)</label>
+      <button onclick="generateOutlines()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50">Générer les plans</button>
+      <label class="block font-heading text-sm font-medium text-text-main mt-6 mb-1">Plans générés (en choisir un)</label>
       <ul id="outlineList" class="mt-2 space-y-2 list-disc pl-5"></ul>
     </div>
 
     <div class="step hidden bg-neutral-light p-6 rounded-lg shadow-md mb-8" id="step-draft">
-      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">4. Draft Article</h2>
+        <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">4. Brouillon d'article</h2>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="draftSystemPrompt">Optional: System Prompt for Draft Generation</label>
-        <textarea id="draftSystemPrompt" placeholder="Guide the AI for draft generation..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="draftSystemPrompt">Optionnel : prompt système pour la rédaction du brouillon</label>
+          <textarea id="draftSystemPrompt" placeholder="Guide l'IA pour rédiger le brouillon..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="draftUserPrompt">Optional: User Prompt for Draft Generation</label>
-        <textarea id="draftUserPrompt" placeholder="Your specific instructions..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="draftUserPrompt">Optionnel : prompt utilisateur pour la rédaction du brouillon</label>
+          <textarea id="draftUserPrompt" placeholder="Vos instructions spécifiques..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
-      <button onclick="generateDraft()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50 mb-6">Generate Draft</button>
-      <label class="block font-heading text-sm font-medium text-text-main mb-1" for="draftOut">Article Draft</label>
+        <button onclick="generateDraft()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50 mb-6">Générer le brouillon</button>
+        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="draftOut">Brouillon de l'article</label>
       <pre id="draftOut" class="font-sans bg-grey-light bg-opacity-20 p-4 rounded-md overflow-x-auto text-sm min-h-[150px]"></pre>
       
-      <h3 class="font-heading text-xl font-semibold text-primary-accent mt-8 mb-4">Your Feedback on the Draft</h3>
+      <h3 class="font-heading text-xl font-semibold text-primary-accent mt-8 mb-4">Vos retours sur le brouillon</h3>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="userFeedback">Your Comments/Critique</label>
-        <textarea id="userFeedback" placeholder="Type your comments here... e.g., The tone is too formal, please make it more conversational." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="userFeedback">Vos commentaires/critique</label>
+        <textarea id="userFeedback" placeholder="Saisissez vos commentaires ici... ex. Le ton est trop formel, rendez-le plus conversationnel." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="critiqueSystemPrompt">Optional: System Prompt for Critique Generation</label>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="critiqueSystemPrompt">Optionnel : prompt système pour la génération de critiques</label>
         <textarea id="critiqueSystemPrompt" placeholder="Guide the AI for critique generation..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="critiqueUserPrompt">Optional: User Prompt for Critique Generation</label>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="critiqueUserPrompt">Optionnel : prompt utilisateur pour la génération de critiques</label>
         <textarea id="critiqueUserPrompt" placeholder="Your specific instructions..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
-      <button onclick="generateCritiques()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50">Generate Critiques</button>
+      <button onclick="generateCritiques()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50">Générer les critiques</button>
     </div>
 
     <div class="step hidden bg-neutral-light p-6 rounded-lg shadow-md mb-8" id="step-critique">
-      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">5. Generated Critiques</h2>
-      <label class="block font-heading text-sm font-medium text-text-main mb-1">Critiques (select one to apply for revision)</label>
+      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">5. Critiques générées</h2>
+      <label class="block font-heading text-sm font-medium text-text-main mb-1">Critiques (choisissez-en une pour la révision)</label>
       <ul id="critiqueList" class="mt-2 space-y-2 list-disc pl-5"></ul>
     </div>
 
     <div class="step hidden bg-neutral-light p-6 rounded-lg shadow-md mb-8" id="step-revision">
-      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">6. Final Revision</h2>
+      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">6. Révision finale</h2>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="revisionSystemPrompt">Optional: System Prompt for Revision</label>
-        <textarea id="revisionSystemPrompt" placeholder="Guide the AI for final revision..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="revisionSystemPrompt">Optionnel : prompt système pour la révision</label>
+          <textarea id="revisionSystemPrompt" placeholder="Guide l'IA pour la révision finale..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="revisionUserPrompt">Optional: User Prompt for Revision</label>
-        <textarea id="revisionUserPrompt" placeholder="Your specific instructions..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="revisionUserPrompt">Optionnel : prompt utilisateur pour la révision</label>
+          <textarea id="revisionUserPrompt" placeholder="Vos instructions spécifiques..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
-      <button onclick="generateRevision()" class="bg-primary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-accent focus:ring-opacity-50 mb-6">Generate Final Article</button>
-      <label class="block font-heading text-sm font-medium text-text-main mb-1" for="revisionOut">Final Article</label>
+      <button onclick="generateRevision()" class="bg-primary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-accent focus:ring-opacity-50 mb-6">Générer l'article final</button>
+      <label class="block font-heading text-sm font-medium text-text-main mb-1" for="revisionOut">Article final</label>
       <pre id="revisionOut" class="font-sans bg-grey-light bg-opacity-20 p-4 rounded-md overflow-x-auto text-sm min-h-[150px]"></pre>
     </div>
 
     <div class="step hidden bg-neutral-light p-6 rounded-lg shadow-md mb-8" id="step-image">
-      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">7. Featured Image</h2>
+      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">7. Image à la une</h2>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="imageSystemPrompt">Optional: System Prompt for Image Prompt Generation</label>
-        <textarea id="imageSystemPrompt" placeholder="Guide the AI for image prompt generation..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="imageSystemPrompt">Optionnel : prompt système pour la génération de l'image</label>
+          <textarea id="imageSystemPrompt" placeholder="Guide l'IA pour générer le prompt d'image..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="imagePromptInput">Optional: Provide Custom Image Prompt</label>
-        <textarea id="imagePromptInput" placeholder="e.g., A futuristic cityscape with flying cars, vibrant colors, optimistic mood..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[80px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="imagePromptInput">Optionnel : fournir un prompt d'image personnalisé</label>
+          <textarea id="imagePromptInput" placeholder="ex. Un paysage urbain futuriste avec des voitures volantes, des couleurs vives, une ambiance optimiste..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[80px]"></textarea>
       </div>
-      <button onclick="generateImage()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50 mb-6">Generate Image</button>
+      <button onclick="generateImage()" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50 mb-6">Générer l'image</button>
       
-      <label class="block font-heading text-sm font-medium text-text-main mb-1" for="imagePromptOut">Generated Image Prompt</label>
+      <label class="block font-heading text-sm font-medium text-text-main mb-1" for="imagePromptOut">Prompt d'image généré</label>
       <pre id="imagePromptOut" class="font-sans bg-grey-light bg-opacity-20 p-4 rounded-md overflow-x-auto text-sm min-h-[80px] mb-4"></pre>
       
-      <label class="block font-heading text-sm font-medium text-text-main mb-1">Generated Image</label>
+      <label class="block font-heading text-sm font-medium text-text-main mb-1">Image générée</label>
       <img id="featuredImg" class="max-w-full rounded-md shadow-sm hidden border border-grey-light" />
-      <button id="downloadImageBtn" class="hidden bg-green-500 hover:bg-green-600 text-neutral-light font-heading font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 mt-4" onclick="downloadImage()">Download Image</button>
+        <button id="downloadImageBtn" class="hidden bg-green-500 hover:bg-green-600 text-neutral-light font-heading font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 mt-4" onclick="downloadImage()">Télécharger l'image</button>
     </div>
 
     <div class="step hidden bg-neutral-light p-6 rounded-lg shadow-md mb-8" id="step-html">
-      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">8. Generate HTML</h2>
+      <h2 class="font-heading text-2xl font-bold text-primary-accent mb-6">8. Générer le HTML</h2>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="htmlSystemPrompt">Optional: System Prompt for HTML Generation</label>
-        <textarea id="htmlSystemPrompt" placeholder="Guide the AI for HTML generation..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="htmlSystemPrompt">Optionnel : prompt système pour la génération du HTML</label>
+          <textarea id="htmlSystemPrompt" placeholder="Guide l'IA pour générer le HTML..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
       <div class="mb-4">
-        <label class="block font-heading text-sm font-medium text-text-main mb-1" for="htmlUserPrompt">Optional: User Prompt for HTML Generation</label>
-        <textarea id="htmlUserPrompt" placeholder="Your specific instructions..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
+          <label class="block font-heading text-sm font-medium text-text-main mb-1" for="htmlUserPrompt">Optionnel : prompt utilisateur pour la génération du HTML</label>
+          <textarea id="htmlUserPrompt" placeholder="Vos instructions spécifiques..." class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[100px]"></textarea>
       </div>
-      <button onclick="generateHTML()" class="bg-primary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-accent focus:ring-opacity-50 mb-6">Generate HTML</button>
-      <label class="block font-heading text-sm font-medium text-text-main mb-1" for="htmlOut">Generated HTML Output</label>
+      <button onclick="generateHTML()" class="bg-primary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-accent focus:ring-opacity-50 mb-6">Générer le HTML</button>
+      <label class="block font-heading text-sm font-medium text-text-main mb-1" for="htmlOut">HTML généré</label>
       <textarea id="htmlOut" class="w-full font-sans px-3 py-2 border border-grey-light rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:border-secondary-accent min-h-[200px]"></textarea>
-      <button id="downloadHtmlBtn" class="hidden bg-green-500 hover:bg-green-600 text-neutral-light font-heading font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 mt-4" onclick="downloadHTML()">Download HTML</button>
+        <button id="downloadHtmlBtn" class="hidden bg-green-500 hover:bg-green-600 text-neutral-light font-heading font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 mt-4" onclick="downloadHTML()">Télécharger le HTML</button>
     </div>
   </main>
 
