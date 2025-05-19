@@ -24,20 +24,28 @@ class OpenAIService {
   /**
    * Generate title suggestions based on a theme
    * @param {string} theme - The initial theme/topic
+   * @param {string} prompt - User-provided prompt
+   * @param {string} systemPrompt - System-provided prompt
    * @returns {Promise<Array>} - Array of title suggestions
    */
-  async generateTitles(theme/*, prompt, systemPrompt*/) {
-    const finalPrompt = `Génère 10 propositions de titres créatifs et accrocheurs pour un article sur "${theme}".
+  async generateTitles(theme, prompt, systemPrompt) {
+    let basePrompt = `Génère 10 propositions de titres créatifs et accrocheurs pour un article sur "${theme}".
     Les titres doivent retenir l'attention, être précis et adaptés au sujet traité.
     Propose des approches variées, de la plus directe à la plus originale.
     Retourne uniquement la liste numérotée des titres de 1 à 10.`;
 
+    if (prompt) {
+      basePrompt += `\n\nInstructions supplémentaires de l'utilisateur :\n${prompt}`;
+    }
+
+    const messages = [];
+    if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+    messages.push({ role: 'user', content: basePrompt });
+
     try {
       const response = await this.client.chat.completions.create({
         model: 'gpt-4o',
-        messages: [
-          { role: 'user', content: finalPrompt }
-        ],
+        messages,
         temperature: 0.8,
         max_tokens: 500
       });
@@ -59,9 +67,11 @@ class OpenAIService {
    * Generate outline options based on title and research
    * @param {string} title - The selected title
    * @param {string} research - Research results
+   * @param {string} prompt - User-provided prompt
+   * @param {string} systemPrompt - System-provided prompt
    * @returns {Promise<Array>} - Array of outline options
    */
-  async generateOutlines(title, research/*, prompt, systemPrompt*/) {
+  async generateOutlines(title, research, prompt, systemPrompt) {
     const finalPrompt = `À partir du titre "${title}" et des recherches suivantes :
 
     ${research}
@@ -74,12 +84,14 @@ class OpenAIService {
 
     Nomme chaque plan "Option 1", "Option 2" et "Option 3".`;
 
+    const messages = [];
+    if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+    messages.push({ role: 'user', content: finalPrompt });
+
     try {
       const response = await this.client.chat.completions.create({
         model: 'gpt-4o',
-        messages: [
-          { role: 'user', content: finalPrompt }
-        ],
+        messages,
         temperature: 0.7,
         max_tokens: 1500
       });
@@ -104,9 +116,11 @@ class OpenAIService {
    * @param {string} title - The selected title
    * @param {string} research - Research results
    * @param {string} outline - Selected outline
+   * @param {string} prompt - User-provided prompt
+   * @param {string} systemPrompt - System-provided prompt
    * @returns {Promise<string>} - Generated draft
    */
-  async generateDraft(title, research, outline/*, prompt, systemPrompt*/) {
+  async generateDraft(title, research, outline, prompt, systemPrompt) {
     const finalPrompt = `Rédige un premier brouillon complet d'un article intitulé "${title}" en suivant ce plan :
 
     ${outline}
@@ -124,12 +138,14 @@ class OpenAIService {
 
     Écris un article complet avec titres et paragraphes correctement formatés.`;
 
+    const messages = [];
+    if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+    messages.push({ role: 'user', content: finalPrompt });
+
     try {
       const response = await this.client.chat.completions.create({
         model: 'gpt-4o',
-        messages: [
-          { role: 'user', content: finalPrompt }
-        ],
+        messages,
         temperature: 0.6,
         max_tokens: 4000
       });
@@ -145,9 +161,11 @@ class OpenAIService {
    * Generate critique options based on draft and user feedback
    * @param {string} draft - The initial draft
    * @param {string} userFeedback - User feedback on the draft
+   * @param {string} prompt - User-provided prompt
+   * @param {string} systemPrompt - System-provided prompt
    * @returns {Promise<Array>} - Array of critique options
    */
-  async generateCritiques(draft, userFeedback/*, prompt, systemPrompt*/) {
+  async generateCritiques(draft, userFeedback, prompt, systemPrompt) {
     const finalPrompt = `Analyse le brouillon d'article suivant :
 
     ${draft}
@@ -165,12 +183,14 @@ class OpenAIService {
 
     Intitule chaque critique "Critique 1", "Critique 2" et "Critique 3".`;
 
+    const messages = [];
+    if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+    messages.push({ role: 'user', content: finalPrompt });
+
     try {
       const response = await this.client.chat.completions.create({
         model: 'gpt-4o',
-        messages: [
-          { role: 'user', content: finalPrompt }
-        ],
+        messages,
         temperature: 0.7,
         max_tokens: 2000
       });
@@ -197,9 +217,11 @@ class OpenAIService {
    * @param {string} outline - Selected outline
    * @param {string} draft - Initial draft
    * @param {string} critique - Selected critique
+   * @param {string} prompt - User-provided prompt
+   * @param {string} systemPrompt - System-provided prompt
    * @returns {Promise<string>} - Revised article
    */
-  async generateRevision(title, research, outline, draft, critique/*, prompt, systemPrompt*/) {
+  async generateRevision(title, research, outline, draft, critique, prompt, systemPrompt) {
     const finalPrompt = `Révise le brouillon d'article suivant intitulé "${title}" :
 
     ${draft}
@@ -225,12 +247,14 @@ class OpenAIService {
 
     Fournis un article complet prêt à être publié.`;
 
+    const messages = [];
+    if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+    messages.push({ role: 'user', content: finalPrompt });
+
     try {
       const response = await this.client.chat.completions.create({
         model: 'gpt-4o',
-        messages: [
-          { role: 'user', content: finalPrompt }
-        ],
+        messages,
         temperature: 0.6,
         max_tokens: 4000
       });
@@ -245,9 +269,11 @@ class OpenAIService {
   /**
    * Generate image prompt based on article content
    * @param {string} article - The final article
+   * @param {string} prompt - User-provided prompt
+   * @param {string} systemPrompt - System-provided prompt
    * @returns {Promise<string>} - Generated image prompt
    */
-  async generateImagePrompt(article/*, prompt, systemPrompt*/) {
+  async generateImagePrompt(article, prompt, systemPrompt) {
     const finalPrompt = `À partir de l'article suivant :
 
     ${article}
@@ -261,12 +287,14 @@ class OpenAIService {
 
     Donne uniquement le prompt d'image, sans explications supplémentaires.`;
 
+    const messages = [];
+    if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+    messages.push({ role: 'user', content: finalPrompt });
+
     try {
       const response = await this.client.chat.completions.create({
         model: 'gpt-4o',
-        messages: [
-          { role: 'user', content: finalPrompt }
-        ],
+        messages,
         temperature: 0.7,
         max_tokens: 500
       });
@@ -306,9 +334,11 @@ class OpenAIService {
    * Format article and image into HTML
    * @param {string} article - The final article
    * @param {string} imageUrl - URL to the generated image
+   * @param {string} prompt - User-provided prompt
+   * @param {string} systemPrompt - System-provided prompt
    * @returns {Promise<string>} - Formatted HTML
    */
-  async formatHTML(article, imageUrl/*, prompt, systemPrompt*/) {
+  async formatHTML(article, imageUrl, prompt, systemPrompt) {
     let base = `Convertis l'article suivant en HTML propre et bien structuré :
 
       ${article}
@@ -316,14 +346,22 @@ class OpenAIService {
     if (imageUrl && !imageUrl.startsWith('data:')) {
       base += `\nIntègre cette image à un endroit approprié (probablement en haut) :\n${imageUrl}\n`;
     }
-    const finalPrompt = `${base}\nLe code HTML doit :\n1. Respecter la structure HTML5 avec doctype, head et body\n2. Contenir les balises meta adéquates\n3. Utiliser des éléments sémantiques (article, section, h1-h6, p, etc.)\n4. Avoir un style sobre et responsive\n5. Mettre correctement en forme le contenu avec titres et paragraphes\n6. Être adapté au mobile\n\nFournis le code HTML complet.`;
+    let finalPrompt = `${base}\nLe code HTML doit :\n1. Respecter la structure HTML5 avec doctype, head et body\n2. Contenir les balises meta adéquates\n3. Utiliser des éléments sémantiques (article, section, h1-h6, p, etc.)\n4. Avoir un style sobre et responsive\n5. Mettre correctement en forme le contenu avec titres et paragraphes\n6. Être adapté au mobile`;
+
+    if (prompt) {
+      finalPrompt += `\n\nInstructions supplémentaires de l'utilisateur :\n${prompt}`;
+    }
+
+    finalPrompt += `\n\nFournis le code HTML complet.`;
+
+    const messages = [];
+    if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+    messages.push({ role: 'user', content: finalPrompt });
 
     try {
       const response = await this.client.chat.completions.create({
         model: 'gpt-4o',
-        messages: [
-          { role: 'user', content: finalPrompt }
-        ],
+        messages,
         temperature: 0.5,
         max_tokens: 4000
       });
@@ -338,16 +376,23 @@ class OpenAIService {
   /**
    * Generate 5 search topic ideas based on the main title / theme
    * @param {string} title
+   * @param {string} systemPrompt - System-provided prompt
+   * @param {string} prompt - User-provided prompt
    * @returns {Promise<Array<string>>}
    */
-  async generateSearchTopics(title/*, systemPrompt*/) {
-    const finalPrompt = `Tu es un journaliste d'investigation qui cherche des sous-thèmes à explorer sur le web.\n\nPropose cinq requêtes de recherche distinctes et concises pour étudier en profondeur le sujet "${title}".\nRetourne-les sous la forme d'une liste numérotée.`;
+  async generateSearchTopics(title, systemPrompt, prompt) {
+    let basePrompt = `Tu es un journaliste d'investigation qui cherche des sous-thèmes à explorer sur le web.\n\nPropose cinq requêtes de recherche distinctes et concises pour étudier en profondeur le sujet "${title}".\nRetourne-les sous la forme d'une liste numérotée.`;
+    if (prompt) {
+      basePrompt += `\n\nInstructions supplémentaires de l'utilisateur :\n${prompt}`;
+    }
+
+    const messages = [];
+    if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+    messages.push({ role: 'user', content: basePrompt });
 
     const response = await this.client.chat.completions.create({
       model: 'gpt-4o',
-      messages: [
-        { role: 'user', content: finalPrompt }
-      ],
+      messages,
       temperature: 0.7,
       max_tokens: 300
     });
@@ -362,13 +407,17 @@ class OpenAIService {
    * Perform web-search based research for each topic and compile into a single document.
    * This uses GPT-4o search preview ("web_search" tool) under the hood.
    * @param {Array<string>} topics
+   * @param {string} systemPrompt - System-provided prompt
    * @returns {Promise<string>} consolidated research document
    */
-  async performWebResearch(topics/*, systemPrompt*/) {
+  async performWebResearch(topics, systemPrompt) {
     const summaries = [];
     for (const topic of topics) {
       try {
-        const prompt = `Tu es un assistant de recherche qui effectue des recherches web en direct et résume les résultats avec des citations.\n\nRecherche sur le web \"${topic}\" et fournis un résumé concis (200-300 mots) des informations les plus fiables que tu trouves. Inclue des citations entre crochets [1], [2], etc. À la fin du résumé, liste les sources avec leurs URL.`;
+        let prompt = `Tu es un assistant de recherche qui effectue des recherches web en direct et résume les résultats avec des citations.\n\nRecherche sur le web "${topic}" et fournis un résumé concis (200-300 mots) des informations les plus fiables que tu trouves. Inclue des citations entre crochets [1], [2], etc. À la fin du résumé, liste les sources avec leurs URL.`;
+        if (systemPrompt) {
+          prompt = `${systemPrompt}\n\n${prompt}`;
+        }
         const response = await this.client.chat.completions.create({
           model: 'gpt-4o-search-preview',
           messages: [

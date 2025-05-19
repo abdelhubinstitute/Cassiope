@@ -27,6 +27,105 @@ function useGodKeys() {
   // document.getElementById('keysSaved').style.display = 'inline'; 
 }
 
+// Prompt utilities
+function getPromptValue(id) {
+  const el = document.getElementById(id);
+  if (!el) return undefined;
+  const val = el.value && el.value.trim();
+  return val || el.placeholder || undefined;
+}
+
+// Default prompt templates (shown to user if they haven't typed anything yet)
+const DEFAULT_PROMPTS = {
+  titleSystemPrompt: `Vous êtes un rédacteur senior spécialisé dans les titres percutants. Générez 10 titres créatifs et accrocheurs pour l'article en gardant à l'esprit le public professionnel visé. Retournez la liste numérotée de 1 à 10 sans texte additionnel.`,
+  topicsSystemPrompt: `En vous basant sur le titre choisi, proposez cinq sous-thèmes de recherche concis qui aideront à creuser le sujet plus en profondeur. Retournez une liste numérotée.`,
+  researchSystemPrompt: `Tu es un assistant de recherche qui effectue des recherches web en direct et résume les résultats avec des citations.\n\nPour chaque sujet sélectionné, tu dois :\n1. Faire une recherche en ligne à jour.\n2. Rédiger un résumé concis (200-300 mots) des informations les plus fiables.\n3. Insérer des citations numérotées entre crochets [1], [2], etc.\n4. Lister les sources (titre + URL) à la fin du résumé.`,
+  outlineSystemPrompt: `À partir du titre et des recherches fournies, propose trois plans détaillés différents pour un article. Chaque plan doit comporter des sections et sous-sections claires et couvrir les points clés. Nomme-les \"Option 1\", \"Option 2\" et \"Option 3\".`,
+  draftSystemPrompt: `Rédige un brouillon complet en suivant le plan sélectionné. Intègre le contenu de la recherche, adopte un ton clair et engageant, et termine par une conclusion forte.`,
+  critiqueSystemPrompt: `Analyse le brouillon et génère trois critiques constructives : points forts, axes d'amélioration et recommandations concrètes.`,
+  revisionSystemPrompt: `À partir du brouillon et de la critique choisie, rédige une version révisée nettement améliorée, prête à être publiée.`,
+  imageSystemPrompt: `Génère un prompt d'image descriptif, visuellement riche et adapté à l'article, prêt pour un modèle de génération d'images IA.`,
+  htmlSystemPrompt: `Convertis l'article final en HTML propre, responsive, en utilisant une structure sémantique. Si une image est fournie, place-la judicieusement.`
+};
+
+// Build the collapsable sidebar that aggregates all prompt inputs
+(function buildPromptSidebar() {
+  const sidebar = document.getElementById('promptSidebar');
+  if (!sidebar) return;
+
+  // Mapping of section titles to the input IDs they contain
+  const sections = {
+    'Titres': ['titleSystemPrompt'],
+    'Sujets': ['topicsSystemPrompt'],
+    'Recherche': ['researchSystemPrompt'],
+    'Plan': ['outlineSystemPrompt'],
+    'Brouillon': ['draftSystemPrompt'],
+    'Critiques': ['critiqueSystemPrompt'],
+    'Révision': ['revisionSystemPrompt'],
+    'Image': ['imageSystemPrompt'],
+    'HTML': ['htmlSystemPrompt']
+  };
+
+  Object.entries(sections).forEach(([sectionTitle, ids]) => {
+    const details = document.createElement('details');
+    details.className = 'mb-4';
+
+    const summary = document.createElement('summary');
+    summary.textContent = sectionTitle;
+    summary.className = 'font-heading font-semibold cursor-pointer py-2';
+    details.appendChild(summary);
+
+    ids.forEach((id) => {
+      const label = document.querySelector(`label[for="${id}"]`);
+      const textarea = document.getElementById(id);
+      if (!textarea) return;
+
+      // Prefill textarea with default prompt template (if any)
+      if (!textarea.value) {
+        textarea.value = DEFAULT_PROMPTS[id] || textarea.placeholder || '';
+      }
+
+      // Ensure the textarea and label are visible when moved
+      if (label) {
+        label.style.display = 'block';
+        label.classList.add('mt-2');
+        details.appendChild(label);
+      }
+      textarea.style.display = 'block';
+      details.appendChild(textarea);
+    });
+
+    sidebar.appendChild(details);
+  });
+})();
+
+// Hook up the sidebar toggle if not already (safety)
+const _toggleBtn = document.getElementById('sidebarToggleBtn');
+const _sidebar = document.getElementById('promptSidebar');
+const _closeBtn = document.getElementById('sidebarCloseBtn');
+if (_toggleBtn && _sidebar) {
+  _toggleBtn.addEventListener('click', () => {
+    // Debug: log state before toggle
+    console.log('Sidebar toggle clicked. Current classes:', _sidebar.className);
+    const isHidden = _sidebar.classList.contains('translate-x-full');
+    if (isHidden) {
+      _sidebar.classList.remove('translate-x-full');
+      _sidebar.classList.add('translate-x-0');
+    } else {
+      _sidebar.classList.add('translate-x-full');
+      _sidebar.classList.remove('translate-x-0');
+    }
+  });
+}
+
+// Close button hides the sidebar
+if (_closeBtn && _sidebar) {
+  _closeBtn.addEventListener('click', () => {
+    _sidebar.classList.add('translate-x-full');
+    _sidebar.classList.remove('translate-x-0');
+  });
+}
+
 // Utilities
 function getKeys(){
   return {
@@ -93,7 +192,8 @@ async function generateTitles(){
   const theme=document.getElementById('theme').value.trim();
   const {openai}=getKeys();
   if(!theme||!openai){alert('Sujet et clé OpenAI nécessaires');return;}
-  const res=await doFetch('/api/title',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({theme,apiKey:openai})});
+  const systemPrompt=getPromptValue('titleSystemPrompt');
+  const res=await doFetch('/api/title',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({theme,apiKey:openai,systemPrompt})});
   const data=await res.json();
   const list=document.getElementById('titleList');
   clearList(list);
@@ -121,12 +221,11 @@ async function generateTitles(){
 async function generateTopics(){
   const {openai}=getKeys();
   if(!state.title||!openai){alert('Titre et clé OpenAI nécessaires');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
-  const res=await doFetch('/api/topics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,apiKey:openai})});
+  const systemPrompt=getPromptValue('topicsSystemPrompt');
+  const res=await doFetch('/api/topics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,apiKey:openai,systemPrompt})});
   const data=await res.json();
   state.topics=data.topics;
   renderTopics();
-  btn.disabled=false;btn.textContent='Générer des sujets';
   show('step-topics');
 }
 
@@ -156,12 +255,13 @@ function addCustomTopic(){
 // Step 3: Research using selected topics
 async function generateResearch(){
   const {openai}=getKeys();
+  const systemPrompt=getPromptValue('researchSystemPrompt');
   const selected=[...document.querySelectorAll('#topicsList li.bg-primary-accent')].map(li=>li.textContent.trim());
   const topicsArr=selected.length?selected:state.topics;
   if(topicsArr.length===0){alert('Sélectionnez au moins un sujet ou ajoutez-en pour la recherche.');return;}
   const btn=document.getElementById('generateResearchBtn');
   btn.disabled=true;btn.textContent='Traitement...';
-  const res=await doFetch('/api/research',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topics:topicsArr,apiKey:openai})});
+  const res=await doFetch('/api/research',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topics:topicsArr,apiKey:openai,systemPrompt})});
   const data=await res.json();
   state.research=data.research;
   document.getElementById('researchOut').textContent=data.research;
@@ -173,8 +273,8 @@ async function generateResearch(){
 async function generateOutlines(){
   const {openai}=getKeys();
   if(!state.title||!state.research||!openai){alert('Étapes précédentes requises');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
-  const res=await doFetch('/api/outline',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,apiKey:openai})});
+  const systemPrompt=getPromptValue('outlineSystemPrompt');
+  const res=await doFetch('/api/outline',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,apiKey:openai,systemPrompt})});
   const data=await res.json();
   const list=document.getElementById('outlineList');clearList(list);
   const selectedClasses = ['bg-primary-accent', 'bg-opacity-10', 'text-primary-accent', 'font-semibold', 'border-primary-accent'];
@@ -202,8 +302,8 @@ async function generateOutlines(){
 async function generateDraft(){
   const {openai}=getKeys();
   if(!state.title||!state.research||!state.outline){alert('Étapes précédentes requises');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
-  const res=await doFetch('/api/draft',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,outline:state.outline,apiKey:openai})});
+  const systemPrompt=getPromptValue('draftSystemPrompt');
+  const res=await doFetch('/api/draft',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,outline:state.outline,apiKey:openai,systemPrompt})});
   const data=await res.json();
   state.draft=data.draft;
   document.getElementById('draftOut').textContent=data.draft;
@@ -214,9 +314,10 @@ async function generateDraft(){
 async function generateCritiques(){
   const {openai}=getKeys();
   const feedback=document.getElementById('userFeedback').value.trim();
-    if(!state.draft){alert('Générez d'abord le brouillon');return;}
+  const systemPrompt=getPromptValue('critiqueSystemPrompt');
+  if(!state.draft){alert('Générez d\'abord le brouillon');return;}
   const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
-  const res=await doFetch('/api/critique',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({draft:state.draft,userFeedback:feedback||'Aucun retour fourni',apiKey:openai})});
+  const res=await doFetch('/api/critique',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({draft:state.draft,userFeedback:feedback||'Aucun retour fourni',apiKey:openai,systemPrompt})});
   const data=await res.json();
   const list=document.getElementById('critiqueList');clearList(list);
   const selectedClasses = ['bg-primary-accent', 'bg-opacity-10', 'text-primary-accent', 'font-semibold', 'border-primary-accent'];
@@ -245,8 +346,8 @@ async function generateCritiques(){
 async function generateRevision(){
   const {openai}=getKeys();
   if(!state.critique){alert('Sélectionnez une critique');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
-  const res=await doFetch('/api/revision',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,outline:state.outline,draft:state.draft,critique:state.critique,apiKey:openai})});
+  const systemPrompt=getPromptValue('revisionSystemPrompt');
+  const res=await doFetch('/api/revision',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:state.title,research:state.research,outline:state.outline,draft:state.draft,critique:state.critique,apiKey:openai,systemPrompt})});
   const data=await res.json();
   state.revision=data.revision;
   document.getElementById('revisionOut').textContent=data.revision;
@@ -258,8 +359,8 @@ async function generateRevision(){
 async function generateImage(){
   const {openai}=getKeys();
   if(!state.revision){alert('Générez d\'abord l\'article révisé');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
-  const res=await doFetch('/api/image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({article:state.revision,apiKey:openai,falKey:getKeys().fal})});
+  const systemPrompt=getPromptValue('imageSystemPrompt');
+  const res=await doFetch('/api/image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({article:state.revision,apiKey:openai,falKey:getKeys().fal,systemPrompt})});
   const data=await res.json();
   state.imageUrl=data.imageUrl;
   document.getElementById('featuredImg').src=data.imageUrl;
@@ -274,8 +375,8 @@ async function generateImage(){
 async function generateHTML(){
   const {openai}=getKeys();
   if(!state.revision||!state.imageUrl){alert('Article et image requis');return;}
-  const btn=event.target;btn.disabled=true;btn.textContent='Traitement...';
-  const payload={article:state.revision,apiKey:openai};
+  const systemPrompt=getPromptValue('htmlSystemPrompt');
+  const payload={article:state.revision,apiKey:openai,systemPrompt};
   if(state.imageUrl && !state.imageUrl.startsWith('data:')){payload.imageUrl=state.imageUrl;}
   const res=await doFetch('/api/html',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   const data=await res.json();

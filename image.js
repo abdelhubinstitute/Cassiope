@@ -71,7 +71,7 @@ router.post('/', async (req, res) => {
     const openaiService = new OpenAIService(apiKey);
     
     // First, generate the image prompt if not provided
-    const imagePrompt = prompt || await openaiService.generateImagePrompt(article, undefined, systemPrompt);
+    const imagePrompt = prompt || await openaiService.generateImagePrompt(article, prompt, systemPrompt);
     
     let imageUrl;
     if (falKey) {

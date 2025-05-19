@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HUB Institute - Workflow d'Article IA</title>
+  <title>Calliope – Workflow IA</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,14 +40,16 @@
     .list-disc li::marker { /* Basic styling for disc markers if not overridden by Tailwind list utilities */
       color: #6F2C91; /* primary-accent */
     }
-    /* Hide optional prompt fields (system/user prompts, custom image prompt) */
-    textarea[id$="SystemPrompt"],
+    /* Prompt sidebar */
+    #promptSidebar {
+      width: 20rem; /* 320px */
+    }
+    /* Hide user prompt fields */
     textarea[id$="UserPrompt"],
     textarea#imagePromptInput,
-    label[for$="SystemPrompt"],
     label[for$="UserPrompt"],
     label[for="imagePromptInput"] {
-      display: none !important;
+      display:none !important;
     }
   </style>
 </head>
@@ -55,7 +57,8 @@
   <header class="bg-primary-dark py-6 px-8 shadow-lg">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
       <img src="https://cdn.prod.website-files.com/6488dd9f0d8ff8a9884d8482/64e4bfb70506b423790fe99e_logo-hubinstitute.png" alt="HUB Institute Logo" class="h-12">
-      <h1 class="font-heading text-3xl font-bold text-neutral-light">Workflow d'Article IA</h1>
+      <h1 class="font-heading text-3xl font-bold text-neutral-light">Calliope – Workflow IA</h1>
+      <button id="sidebarToggleBtn" class="bg-secondary-accent hover:opacity-90 text-neutral-light font-heading font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-accent focus:ring-opacity-50">Prompts</button>
     </div>
   </header>
   
@@ -226,6 +229,12 @@
         <button id="downloadHtmlBtn" class="hidden bg-green-500 hover:bg-green-600 text-neutral-light font-heading font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 mt-4" onclick="downloadHTML()">Télécharger le HTML</button>
     </div>
   </main>
+
+  <div id="promptSidebar" class="fixed top-0 right-0 h-full bg-neutral-light shadow-lg transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto p-6">
+    <button id="sidebarCloseBtn" class="absolute top-4 right-4 text-grey-dark hover:text-primary-accent text-xl font-bold">×</button>
+  </div>
+
+  <!-- Sidebar toggle handled in app.js -->
 
   <script src="app.js"></script>
 </body>
