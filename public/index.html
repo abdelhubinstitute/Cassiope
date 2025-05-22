@@ -7,20 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <style>
-    body{font-family:'Roboto',Arial,Helvetica,sans-serif;margin:2rem;max-width:800px}
-    input,textarea,select,button{font-size:1rem}
-    textarea{width:100%;min-height:120px}
-    .hidden{display:none}
-    .step{margin-bottom:2rem;padding:1rem;border:1px solid #ddd;border-radius:8px}
-    h2{margin-top:0}
-    ul{padding-left:1.2rem}
-    li{cursor:pointer;margin-bottom:4px}
-    li.selected{background:#e0f7fa}
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>AI Article Workflow</h1>
+  <div class="container">
+    <h1>AI Article Workflow</h1>
 
   <div class="step" id="step-keys">
     <h2>API Keys</h2>
@@ -28,7 +19,7 @@
     <label>FAL    <input type="text" id="falKey" placeholder="fal_..."/></label><br>
     <!-- Perplexity key no longer needed -->
     <button onclick="saveKeys()">Save Keys</button>
-    <span id="keysSaved" style="color:green;display:none">✔ Saved to browser</span>
+    <span id="keysSaved" class="status-msg">✔ Saved to browser</span>
   </div>
 
   <div class="step" id="step-topic">
@@ -94,7 +85,7 @@
     <textarea id="imagePromptInput" placeholder="Optional: Provide custom image prompt"></textarea>
     <button onclick="generateImage()">Generate Image</button>
     <pre id="imagePromptOut"></pre>
-    <img id="featuredImg" style="max-width:100%;display:none" />
+    <img id="featuredImg" />
     <br><button id="downloadImageBtn" class="hidden" onclick="downloadImage()">Download Image</button>
   </div>
 
@@ -103,10 +94,11 @@
     <textarea id="htmlSystemPrompt" placeholder="Optional custom SYSTEM prompt for HTML"></textarea>
     <textarea id="htmlUserPrompt" placeholder="Optional custom USER prompt for HTML"></textarea>
     <button onclick="generateHTML()">Generate HTML</button>
-    <textarea id="htmlOut" style="width:100%;min-height:200px"></textarea>
+    <textarea id="htmlOut" class="html-output"></textarea>
     <br><button id="downloadHtmlBtn" class="hidden" onclick="downloadHTML()">Download HTML</button>
   </div>
 
+  </div>
   <script src="app.js"></script>
 </body>
 </html> 
